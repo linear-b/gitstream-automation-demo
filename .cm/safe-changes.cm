@@ -5,8 +5,8 @@ manifest:
 
 automations:
   safe_changes:
-    # Triggered for any changes that only affect formatting, documentation, tests, or images
     if:
+      - {{ pr.title | capture(regex=r/safe_changes/) }}
       - {{ is.formatting or is.docs or is.tests or is.image }}
     # Apply a safe change label, approve the PR and explain why in a comment.
     run: 
