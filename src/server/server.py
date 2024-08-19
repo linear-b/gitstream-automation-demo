@@ -50,6 +50,9 @@ def newConnections(socket):
         print(New connection at ID  + str(connections[len(connections) - 1]))
         total_connections += 1
 
+
+
+
 def main():
     #Get host and port
     host = input(Host: )
@@ -59,6 +62,9 @@ def main():
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.bind((host, port))
     sock.listen(5)
+
+
+    
 
     #Create new thread to wait for connections
     newConnectionsThread = threading.Thread(target = newConnections, args = (sock,))
