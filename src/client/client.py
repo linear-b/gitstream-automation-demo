@@ -4,9 +4,9 @@ import sys
 
 #Wait for incoming data from server
 #.decode is used to turn the message in bytes to a string
-def receive(socket, connected = True):
+def receive(socket, stop_event):
     while True:
-        if not connected:
+        if stop_event.is_set():
             break
         try:
             data = b''
