@@ -75,16 +75,20 @@ def main():
 
     #Create new server socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind((host, port))
-    sock.listen(5)
+    try:
+        sock.bind((host, port))
+        sock.listen(5)
+    except socket.error as e:
+        print(f"Failed to bind socket: {e.strerror}")
+        return
 
     #Create new thread to wait for connections
     newConnectionsThread = threading.Thread(target = newConnections, args = (sock,))
     newConnectionsThread.start()
 
+    stop_event = threading.Event()
     try:
-        while True:
-            pass
+        stop_event.wait()
     except KeyboardInterrupt:
         for client in connections[:]:
             client.signal = False
