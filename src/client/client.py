@@ -15,8 +15,8 @@ def receive(socket, connected = True):
                     break
             if data:
                 print(str(data.decode('utf-8')))
-        except:
-            print("You have been disconnected from the server")
+        except (socket.error, ConnectionResetError) as e:
+            print("You have been disconnected from the server. Error: " + e.strerror)
             connected = False
             break
 
@@ -28,8 +28,8 @@ port = int(input("Port: "))
 try:
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect((host, port))
-except:
-    print("Could not make a connection to the server")
+except (socket.error, ConnectionRefusedError) as e:
+    print("Could not make a connection to the server. Error: " + e.strerror)
     input("Press enter to quit")
     sys.exit(0)
 

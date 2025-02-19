@@ -34,7 +34,7 @@ class Client(threading.Thread):
                     data += chunk
                     if len(chunk) < 4096:
                         break
-            except:
+            except (socket.error, ConnectionResetError) as e:
                 print("Client " + str(self.address) + " has disconnected")
                 self.signal = False
                 connections.remove(self)
@@ -66,7 +66,7 @@ def main():
     sock.listen(5)
 
     #Create new thread to wait for connections
-    newConnectionsThread = threading.Thread(target = newConnections, args = (sock))
+    newConnectionsThread = threading.Thread(target = newConnections, args = (sock,))
     newConnectionsThread.start()
     
 main()
