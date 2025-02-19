@@ -49,9 +49,8 @@ class Client(threading.Thread):
                             client.socket.sendall(data)
 
 #Wait for new connections
-def newConnections(socket):
-    running = True
-    while running:
+def newConnections(socket, stop_event):
+    while not stop_event.is_set():
         sock, address = socket.accept()
         global total_connections
         with _connections_lock:
@@ -83,17 +82,18 @@ def main():
         print(f"Failed to bind socket: {e.strerror}")
         return
 
+    stop_event = threading.Event()
     #Create new thread to wait for connections
-    newConnectionsThread = threading.Thread(target = newConnections, args = (sock,))
+    newConnectionsThread = threading.Thread(target = newConnections, args = (sock, stop_event))
     newConnectionsThread.start()
 
-    stop_event = threading.Event()
     try:
         stop_event.wait()
     except KeyboardInterrupt:
         for client in connections[:]:
             client.signal = False
             client.socket.close()
+        stop_event.set()
         newConnectionsThread.join()
         sock.close()    
     

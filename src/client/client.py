@@ -24,7 +24,13 @@ def receive(socket, stop_event):
 
 #Get host and port
 host = input("Host: ")
-port = int(input("Port: "))
+try:
+    port = int(input("Port: "))
+    if not (1024 <= port <= 65535):
+        raise ValueError("Port must be between 1024 and 65535")
+except ValueError as e:
+    print(f"Invalid port: {str(e)}")
+    sys.exit(1)
 
 #Attempt connection to server
 try:
