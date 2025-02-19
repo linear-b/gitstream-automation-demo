@@ -26,9 +26,9 @@ name = input("Enter your name: ")
 
 # Attempt connection to server
 try:
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.connect((host, port))
-    sock.sendall(str.encode(name))  # Send the name to the server
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+        sock.connect((host, port))
+        sock.sendall(str.encode(name))
 except (socket.error, ConnectionRefusedError) as e:
     print("Could not make a connection to the server. Error: " + str(e))
     input("Press enter to quit")

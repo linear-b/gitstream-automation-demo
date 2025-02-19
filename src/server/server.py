@@ -53,14 +53,18 @@ class Client(threading.Thread):
 def newConnections(socket):
     global total_connections
     while True:
-        sock, address = socket.accept()
-        name = sock.recv(1024).decode('utf-8')  # Receive the name from the client
-        client = Client(sock, address, total_connections, name, True)
-        with _connections_lock:
-            connections.append(client)
-            total_connections += 1
-        client.start()
-        print("New connection at ID " + str(client))
+        try:
+            sock, address = socket.accept()
+            name = sock.recv(1024).decode('utf-8')  # Receive the name from the client
+            client = Client(sock, address, total_connections, name, True)
+            with _connections_lock:
+                connections.append(client)
+                total_connections += 1
+            client.start()
+            print("New connection at ID " + str(client))
+        except (socket.error, ConnectionError) as e:
+            print(f"Error accepting connection: {e}")
+            continue
 
 def main():
     # Get host and port
