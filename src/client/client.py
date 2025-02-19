@@ -19,7 +19,6 @@ def receive(socket, stop_event):
                 print(str(data.decode('utf-8')))
         except (socket.error, ConnectionResetError) as e:
             print("You have been disconnected from the server. Error: " + e.strerror)
-            connected = False
             break
 
 #Get host and port

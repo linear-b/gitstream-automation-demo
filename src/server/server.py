@@ -35,7 +35,7 @@ class Client(threading.Thread):
                     data += chunk
                     if len(chunk) < 4096:
                         break
-            except (socket.error, ConnectionResetError) as e:
+            except (socket.error, ConnectionResetError):
                 print("Client " + str(self.address) + " has disconnected")
                 self.signal = False
                 with _connections_lock:
@@ -64,7 +64,12 @@ def main():
     host = input("Host: ")
     if not host:
         host = "localhost"
-    port = int(input("Port: "))
+    
+    try:
+        port = int(input("Port: "))
+    except ValueError:
+        print("Port must be a number")
+        return
     if not (1024 <= port <= 65535):
         raise ValueError("Port must be between 1024 and 65535")
 
@@ -87,4 +92,6 @@ def main():
         newConnectionsThread.join()
         sock.close()    
     
-main()
+
+if __name__ == "__main__":
+    main()
