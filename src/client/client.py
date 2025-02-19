@@ -4,8 +4,8 @@ import sys
 
 #Wait for incoming data from server
 #.decode is used to turn the message in bytes to a string
-def receive(socket, signal):
-    while signal:
+def receive(socket, connected = True):
+    while connected:
         try:
             data = b''
             while True:
@@ -17,7 +17,7 @@ def receive(socket, signal):
                 print(str(data.decode('utf-8')))
         except:
             print("You have been disconnected from the server")
-            signal = False
+            connected = False
             break
 
 #Get host and port

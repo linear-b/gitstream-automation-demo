@@ -18,7 +18,7 @@ class Client(threading.Thread):
         self.signal = signal
     
     def __str__(self):
-        return str(self.id) +   + str(self.address)
+        return str(self.id) + " " + str(self.address)
     
     #Attempt to get data from client
     #If unable to, assume client has disconnected and remove him from server data
@@ -35,7 +35,7 @@ class Client(threading.Thread):
                     if len(chunk) < 4096:
                         break
             except:
-                print(Client  + str(self.address) + " has disconnected")
+                print("Client " + str(self.address) + " has disconnected")
                 self.signal = False
                 connections.remove(self)
                 break
@@ -66,7 +66,7 @@ def main():
     sock.listen(5)
 
     #Create new thread to wait for connections
-    newConnectionsThread = threading.Thread(target = newConnections, args = (sock,))
+    newConnectionsThread = threading.Thread(target = newConnections, args = (sock))
     newConnectionsThread.start()
     
 main()
