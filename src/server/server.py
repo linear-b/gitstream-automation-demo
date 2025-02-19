@@ -50,7 +50,8 @@ class Client(threading.Thread):
 
 #Wait for new connections
 def newConnections(socket):
-    while True:
+    running = True
+    while running:
         sock, address = socket.accept()
         global total_connections
         with _connections_lock:

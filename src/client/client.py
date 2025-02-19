@@ -8,6 +8,7 @@ def receive(socket, stop_event):
     while True:
         if stop_event.is_set():
             break
+        socket.settimeout(1.0)  # 1 second timeout
         try:
             data = b''
             while True:
@@ -17,7 +18,7 @@ def receive(socket, stop_event):
                     break
             if data:
                 print(str(data.decode('utf-8')))
-        except (socket.error, ConnectionResetError) as e:
+        except (socket.error, ConnectionResetError, socket.timeout) as e:
             print(f"You have been disconnected from the server. Error: {e.strerror}")
             break
 
