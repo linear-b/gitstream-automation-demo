@@ -81,6 +81,10 @@ def main():
         while True:
             pass
     except KeyboardInterrupt:
+        for client in connections[:]:
+            client.signal = False
+            client.socket.close()
+        newConnectionsThread.join()
         sock.close()    
     
 main()

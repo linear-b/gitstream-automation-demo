@@ -36,7 +36,8 @@ except (socket.error, ConnectionRefusedError) as e:
     sys.exit(0)
 
 #Create new thread to wait for data
-receiveThread = threading.Thread(target = receive, args = (sock, True))
+stop_event = threading.Event()
+receiveThread = threading.Thread(target = receive, args = (sock, stop_event))
 receiveThread.start()
 
 #Send data to server
@@ -47,5 +48,6 @@ try:
         message = input()
         sock.sendall(str.encode(message))
 finally:
+    stop_event.set()
     sock.close()
     receiveThread.join()
