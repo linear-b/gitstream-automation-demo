@@ -52,8 +52,8 @@ class Client(threading.Thread):
 def newConnections(socket, stop_event):
     while not stop_event.is_set():
         sock, address = socket.accept()
-        global total_connections
         with _connections_lock:
+            global total_connections
             connections.append(Client(sock, address, total_connections, "Name", True))
             connections[len(connections) - 1].start()
             print("New connection at ID " + str(connections[len(connections) - 1]))
