@@ -57,9 +57,9 @@ def newConnections(socket):
         client = Client(sock, address, total_connections, name, True)
         with _connections_lock:
             connections.append(client)
+            total_connections += 1
         client.start()
         print("New connection at ID " + str(client))
-        total_connections += 1
 
 def main():
     # Get host and port

@@ -4,8 +4,8 @@ import sys
 
 # Wait for incoming data from server
 # .decode is used to turn the message in bytes to a string
-def receive(socket, connected=True):
-    while connected:
+def receive(socket, stop_event):
+    while not stop_event.is_set():
         try:
             data = b''
             while True:
@@ -36,7 +36,8 @@ except (socket.error, ConnectionRefusedError) as e:
     sys.exit(0)
 
 # Create new thread to wait for data
-receiveThread = threading.Thread(target=receive, args=(sock, True))
+stop_event = threading.Event()
+receiveThread = threading.Thread(target=receive, args=(sock, stop_event))
 receiveThread.start()
 
 # Send data to server
@@ -52,6 +53,6 @@ except (socket.error, ConnectionResetError) as e:
     print(f"Connection error: {e}")
 finally:
     print("Closing connection...")
-    connected = False  # Signal receive thread to stop
+    stop_event.set()  # Signal receive thread to stop
     sock.close()
     receiveThread.join()
