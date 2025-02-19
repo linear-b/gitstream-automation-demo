@@ -23,11 +23,11 @@ OPERATIONS = {
     '4': (divide, '/'),
 }
 
-print("Select operation.")
-print("1.Add")
-print("2.Subtract")
-print("3.Multiply")
-print("4.Divide")
+print("""Select operation.
+1.Add
+2.Subtract
+3.Multiply
+4.Divide""")
 
 while True:
     # take input from the user
@@ -47,9 +47,10 @@ while True:
         
         # check if user wants another calculation
         # break the while loop if answer is no
-        next_calculation = input("Let's do next calculation? (yes/no): ").lower()
-        while next_calculation not in ["yes", "no"]:
+        while True:
             next_calculation = input("Let's do next calculation? (yes/no): ").lower()
+            if next_calculation in ["yes", "no"]:
+                break
         if next_calculation == "no":
             break
             
