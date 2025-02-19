@@ -1,14 +1,14 @@
 import socket
 import threading
 
-#Variables for holding information about connections
+# Variables for holding information about connections
 connections = []
 total_connections = 0
 _connections_lock = threading.Lock()
 
-#Client class, new instance created for each connected client
-#Each instance has the socket and address that is associated with items
-#Along with an assigned ID and a name chosen by the client
+# Client class, new instance created for each connected client
+# Each instance has the socket and address that is associated with items
+# Along with an assigned ID and a name chosen by the client
 class Client(threading.Thread):
     def __init__(self, socket, address, id, name, signal):
         threading.Thread.__init__(self)
@@ -19,13 +19,13 @@ class Client(threading.Thread):
         self.signal = signal
     
     def __str__(self):
-        return str(self.id) + " " + str(self.address)
+        return str(self.id) + " " + str(self.address) + " " + self.name
     
-    #Attempt to get data from client
-    #If unable to, assume client has disconnected and remove him from server data
-    #If able to and we get data back, print it in the server and send it back to every
-    #client aside from the client that has sent it
-    #.decode is used to convert the byte data into a printable string
+    # Attempt to get data from client
+    # If unable to, assume client has disconnected and remove him from server data
+    # If able to and we get data back, print it in the server and send it back to every
+    # client aside from the client that has sent it
+    # .decode is used to convert the byte data into a printable string
     def run(self):
         while self.signal:
             try:
@@ -47,19 +47,21 @@ class Client(threading.Thread):
                     if client.id != self.id:
                         client.socket.sendall(data)
 
-#Wait for new connections
+# Wait for new connections
 def newConnections(socket):
+    global total_connections
     while True:
         sock, address = socket.accept()
-        global total_connections
+        name = sock.recv(1024).decode('utf-8')  # Receive the name from the client
+        client = Client(sock, address, total_connections, name, True)
         with _connections_lock:
-            connections.append(Client(sock, address, total_connections, "Name", True))
-            connections[len(connections) - 1].start()
-            print("New connection at ID " + str(connections[len(connections) - 1]))
-            total_connections += 1
+            connections.append(client)
+        client.start()
+        print("New connection at ID " + str(client))
+        total_connections += 1
 
 def main():
-    #Get host and port
+    # Get host and port
     host = input("Host: ")
     if not host:
         host = "localhost"
@@ -67,13 +69,13 @@ def main():
     if not (1024 <= port <= 65535):
         raise ValueError("Port must be between 1024 and 65535")
 
-    #Create new server socket
+    # Create new server socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.bind((host, port))
     sock.listen(5)
 
-    #Create new thread to wait for connections
-    newConnectionsThread = threading.Thread(target = newConnections, args = (sock,))
+    # Create new thread to wait for connections
+    newConnectionsThread = threading.Thread(target=newConnections, args=(sock,))
     newConnectionsThread.start()
     
 main()
