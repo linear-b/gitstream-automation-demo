@@ -84,6 +84,7 @@ def main():
     try:
         sock.bind((host, port))
         sock.listen(5)
+        sock.settimeout(60)  # 60 second timeout
     except socket.error as e:
         print(f"Failed to bind socket: {e}")
         sys.exit(1)
