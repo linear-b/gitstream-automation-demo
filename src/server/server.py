@@ -43,9 +43,10 @@ class Client(threading.Thread):
                 break
             if data != b"":
                 print("ID " + str(self.id) + ": " + str(data.decode('utf-8')))
-                for client in connections:
-                    if client.id != self.id:
-                        client.socket.sendall(data)
+                with _connections_lock:
+                    for client in connections:
+                        if client.id != self.id:
+                            client.socket.sendall(data)
 
 # Wait for new connections
 def newConnections(socket):
@@ -77,5 +78,11 @@ def main():
     # Create new thread to wait for connections
     newConnectionsThread = threading.Thread(target=newConnections, args=(sock,))
     newConnectionsThread.start()
-    
-main()
+    try:
+        while True:
+            pass
+    except KeyboardInterrupt:
+        sock.close()
+
+if __name__ == "__main__":
+    main()
