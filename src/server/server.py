@@ -1,4 +1,5 @@
 import socket
+import sys
 import threading
 
 # Variables for holding information about connections
@@ -66,9 +67,13 @@ def main():
     host = input("Host: ")
     if not host:
         host = "localhost"
-    port = int(input("Port: "))
-    if not (1024 <= port <= 65535):
-        raise ValueError("Port must be between 1024 and 65535")
+    try:
+        port = int(input("Port: "))
+        if not (1024 <= port <= 65535):
+            raise ValueError("Port must be between 1024 and 65535")
+    except ValueError as e:
+        print(f"Invalid port: {e}")
+        sys.exit(1)
 
     # Create new server socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -79,8 +84,8 @@ def main():
     newConnectionsThread = threading.Thread(target=newConnections, args=(sock,))
     newConnectionsThread.start()
     try:
-        while True:
-            pass
+        stop_event = threading.Event()
+        stop_event.wait()  # Wait indefinitely until KeyboardInterrupt
     except KeyboardInterrupt:
         print("\nShutting down server...")
         # Signal all clients to stop

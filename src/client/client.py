@@ -13,7 +13,7 @@ def receive(socket, stop_event):
                 data += chunk
                 if len(chunk) < 4096:
                     break
-            if data:
+            if data and len(data) > 0:
                 print(str(data.decode('utf-8')))
         except (socket.error, ConnectionResetError) as e:
             print("You have been disconnected from the server. Error: " + str(e))
