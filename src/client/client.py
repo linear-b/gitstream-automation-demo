@@ -7,8 +7,14 @@ import sys
 def receive(socket, signal):
     while signal:
         try:
-            data = socket.recv(32)
-            print(str(data.decode('utf-8')))
+            data = b''
+            while True:
+                chunk = socket.recv(4096)
+                data += chunk
+                if len(chunk) < 4096:
+                    break
+            if data:
+                print(str(data.decode('utf-8')))
         except:
             print("You have been disconnected from the server")
             signal = False

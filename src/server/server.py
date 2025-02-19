@@ -18,7 +18,7 @@ class Client(threading.Thread):
         self.signal = signal
     
     def __str__(self):
-        return str(self.id) + " " + str(self.address)
+        return str(self.id) +   + str(self.address)
     
     #Attempt to get data from client
     #If unable to, assume client has disconnected and remove him from server data
@@ -28,13 +28,18 @@ class Client(threading.Thread):
     def run(self):
         while self.signal:
             try:
-                data = self.socket.recv(32)
+                data = b''
+                while True:
+                    chunk = self.socket.recv(4096)
+                    data += chunk
+                    if len(chunk) < 4096:
+                        break
             except:
-                print("Client " + str(self.address) + " has disconnected")
+                print(Client  + str(self.address) + " has disconnected")
                 self.signal = False
                 connections.remove(self)
                 break
-            if data != "":
+            if data != b"":
                 print("ID " + str(self.id) + ": " + str(data.decode('utf-8')))
                 for client in connections:
                     if client.id != self.id:
