@@ -16,18 +16,19 @@ def divide(x, y):
         raise ValueError("Cannot divide by zero")
     return x / y
 
-
-print("Select operation.")
-print("1.Add")
-print("2.Subtract")
-print("3.Multiply")
-print("4.Divide")
 OPERATIONS = {
     '1': (add, '+'),
     '2': (subtract, '-'),
     '3': (multiply, '*'),
     '4': (divide, '/')
 }
+
+print("Select operation.")
+print("1.Add")
+print("2.Subtract")
+print("3.Multiply")
+print("4.Divide")
+
 while True:
     # take input from the user
     choice = input("Enter choice(1/2/3/4): ")
@@ -47,8 +48,10 @@ while True:
         # check if user wants another calculation
         # break the while loop if answer is no
         next_calculation = input("Let's do next calculation? (yes/no): ")
-        while (next_calculation.lower() not in ["yes", "no"]):
+        while True:
             next_calculation = input("Let's do next calculation? (yes/no): ")
+            if next_calculation.lower() in ["yes", "no"]:
+                break
             
         if next_calculation.lower() == "no":
             break
