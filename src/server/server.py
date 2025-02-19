@@ -81,8 +81,12 @@ def main():
 
     # Create new server socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind((host, port))
-    sock.listen(5)
+    try:
+        sock.bind((host, port))
+        sock.listen(5)
+    except socket.error as e:
+        print(f"Failed to bind socket: {e}")
+        sys.exit(1)
 
     # Create new thread to wait for connections
     newConnectionsThread = threading.Thread(target=newConnections, args=(sock,))
