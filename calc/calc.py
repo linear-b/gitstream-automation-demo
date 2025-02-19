@@ -22,7 +22,12 @@ print("1.Add")
 print("2.Subtract")
 print("3.Multiply")
 print("4.Divide")
-
+operations = {
+    '1': (add, '+'),
+    '2': (subtract, '-'),
+    '3': (multiply, '*'),
+    '4': (divide, '/')
+}
 while True:
     # take input from the user
     choice = input("Enter choice(1/2/3/4): ")
@@ -36,22 +41,13 @@ while True:
             print("Invalid input. Please enter a number.")
             continue
 
-        if choice == '1':
-            print(num1, "+", num2, "=", add(num1, num2))
-
-        elif choice == '2':
-            print(num1, "-", num2, "=", subtract(num1, num2))
-
-        elif choice == '3':
-            print(num1, "*", num2, "=", multiply(num1, num2))
-
-        elif choice == '4':
-            print(num1, "/", num2, "=", divide(num1, num2))
+        func, operator = operations[choice]
+        print(num1, operator, num2, "=", func(num1, num2))
         
         # check if user wants another calculation
         # break the while loop if answer is no
         next_calculation = input("Let's do next calculation? (yes/no): ")
         if next_calculation.lower() == "no":
-          break
+            break
     else:
         print("Invalid Input")
