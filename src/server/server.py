@@ -61,7 +61,11 @@ def newConnections(socket):
 def main():
     #Get host and port
     host = input("Host: ")
+    if not host:
+        host = "localhost"
     port = int(input("Port: "))
+    if not (1024 <= port <= 65535):
+        raise ValueError("Port must be between 1024 and 65535")
 
     #Create new server socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
