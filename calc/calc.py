@@ -12,6 +12,8 @@ def multiply(x, y):
 
 # This function divides two numbers
 def divide(x, y):
+    if y == 0:
+        raise ValueError("Cannot divide by zero")
     return x / y
 
 
@@ -49,7 +51,7 @@ while True:
         # check if user wants another calculation
         # break the while loop if answer is no
         next_calculation = input("Let's do next calculation? (yes/no): ")
-        if next_calculation == "no":
+        if next_calculation.lower() == "no":
           break
     else:
         print("Invalid Input")
