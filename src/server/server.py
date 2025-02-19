@@ -88,9 +88,6 @@ def main():
             for client in connections:
                 client.signal = False
                 client.socket.close()
-        # Wait for all client threads to finish
-        with _connections_lock:
-            for client in connections:
                 client.join()
         sock.close()
 
