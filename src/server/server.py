@@ -82,6 +82,16 @@ def main():
         while True:
             pass
     except KeyboardInterrupt:
+        print("\nShutting down server...")
+        # Signal all clients to stop
+        with _connections_lock:
+            for client in connections:
+                client.signal = False
+                client.socket.close()
+        # Wait for all client threads to finish
+        with _connections_lock:
+            for client in connections:
+                client.join()
         sock.close()
 
 if __name__ == "__main__":

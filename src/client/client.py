@@ -45,7 +45,13 @@ receiveThread.start()
 try:
     while True:
         message = input()
+        if not message:  # Allow clean exit on empty input
+            break
         sock.sendall(str.encode(message))
+except (socket.error, ConnectionResetError) as e:    
+    print(f"Connection error: {e}")
 finally:
+    print("Closing connection...")
+    connected = False  # Signal receive thread to stop
     sock.close()
     receiveThread.join()
