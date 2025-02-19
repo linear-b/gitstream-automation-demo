@@ -20,7 +20,7 @@ OPERATIONS = {
     '1': (add, '+'),
     '2': (subtract, '-'),
     '3': (multiply, '*'),
-    '4': (divide, '/')
+    '4': (divide, '/'),
 }
 
 print("Select operation.")
@@ -47,12 +47,11 @@ while True:
         
         # check if user wants another calculation
         # break the while loop if answer is no
-        while True:
-            next_calculation = input("Let's do next calculation? (yes/no): ")
-            if next_calculation.lower() in ["yes", "no"]:
-                break
-            
-        if next_calculation.lower() == "no":
+        next_calculation = input("Let's do next calculation? (yes/no): ").lower()
+        while next_calculation not in ["yes", "no"]:
+            next_calculation = input("Let's do next calculation? (yes/no): ").lower()
+        if next_calculation == "no":
             break
+            
     else:
         print("Invalid Input. Please select 1, 2, 3, or 4.")
