@@ -39,7 +39,7 @@ def main():
                 num1 = float(input("Enter first number: "))
                 num2 = float(input("Enter second number: "))
             except ValueError:
-                print("Invalid input. Please enter a number.")
+                print("Invalid input. Please enter valid numbers for both inputs.")
                 continue
     
             func, operator = operations[choice]
