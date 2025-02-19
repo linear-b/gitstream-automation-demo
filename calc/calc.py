@@ -22,7 +22,7 @@ print("1.Add")
 print("2.Subtract")
 print("3.Multiply")
 print("4.Divide")
-operations = {
+OPERATIONS = {
     '1': (add, '+'),
     '2': (subtract, '-'),
     '3': (multiply, '*'),
@@ -41,13 +41,13 @@ while True:
             print("Invalid input. Please enter a number.")
             continue
 
-        func, operator = operations[choice]
+        func, operator = OPERATIONS[choice]
         print(num1, operator, num2, "=", func(num1, num2))
         
         # check if user wants another calculation
         # break the while loop if answer is no
         next_calculation = input("Let's do next calculation? (yes/no): ")
-        while (next_calculation.lower() != "yes" or next_calculation.lower() != "no"):
+        while (next_calculation.lower() not in ["yes", "no"]):
             next_calculation = input("Let's do next calculation? (yes/no): ")
             
         if next_calculation.lower() == "no":
