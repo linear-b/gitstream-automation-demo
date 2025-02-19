@@ -4,6 +4,7 @@ import threading
 #Variables for holding information about connections
 connections = []
 total_connections = 0
+_connections_lock = threading.Lock()
 
 #Client class, new instance created for each connected client
 #Each instance has the socket and address that is associated with items
@@ -37,7 +38,8 @@ class Client(threading.Thread):
             except (socket.error, ConnectionResetError) as e:
                 print("Client " + str(self.address) + " has disconnected")
                 self.signal = False
-                connections.remove(self)
+                with _connections_lock:
+                    connections.remove(self)
                 break
             if data != b"":
                 print("ID " + str(self.id) + ": " + str(data.decode('utf-8')))
@@ -50,10 +52,11 @@ def newConnections(socket):
     while True:
         sock, address = socket.accept()
         global total_connections
-        connections.append(Client(sock, address, total_connections, "Name", True))
-        connections[len(connections) - 1].start()
-        print("New connection at ID " + str(connections[len(connections) - 1]))
-        total_connections += 1
+        with _connections_lock:
+            connections.append(Client(sock, address, total_connections, "Name", True))
+            connections[len(connections) - 1].start()
+            print("New connection at ID " + str(connections[len(connections) - 1]))
+            total_connections += 1
 
 def main():
     #Get host and port
