@@ -23,36 +23,40 @@ OPERATIONS = {
     '4': (divide, '/'),
 }
 
-print("""Select operation.
-1.Add
-2.Subtract
-3.Multiply
-4.Divide""")
-
-while True:
-    # take input from the user
-    choice = input("Enter choice(1/2/3/4): ")
-
-    # check if choice is one of the four options
-    if choice in ('1', '2', '3', '4'):
-        try:
-            num1 = float(input("Enter first number: "))
-            num2 = float(input("Enter second number: "))
-        except ValueError:
-            print("Invalid input. Please enter a number.")
-            continue
-
-        func, operator = OPERATIONS[choice]
-        print(num1, operator, num2, "=", func(num1, num2))
-        
-        # check if user wants another calculation
-        # break the while loop if answer is no
-        while True:
-            next_calculation = input("Let's do next calculation? (yes/no): ").lower()
-            if next_calculation in ["yes", "no"]:
-                break
-        if next_calculation == "no":
-            break
+def main():
+    print("""Select operation.
+    1.Add
+    2.Subtract
+    3.Multiply
+    4.Divide""")
+    
+    while True:
+        # take input from the user
+        choice = input("Enter choice(1/2/3/4): ")
+    
+        # check if choice is one of the four options
+        if choice in ('1', '2', '3', '4'):
+            try:
+                num1 = float(input("Enter first number: "))
+                num2 = float(input("Enter second number: "))
+            except ValueError:
+                print("Invalid input. Please enter a number.")
+                continue
+    
+            func, operator = OPERATIONS[choice]
+            print(num1, operator, num2, "=", func(num1, num2))
             
-    else:
-        print("Invalid Input. Please select 1, 2, 3, or 4.")
+            # check if user wants another calculation
+            # break the while loop if answer is no
+            while True:
+                next_calculation = input("Let's do next calculation? (yes/no): ").lower()
+                if next_calculation in ["yes", "no"]:
+                    break
+            if next_calculation == "no":
+                break
+                
+        else:
+            print("Invalid Input. Please select 1, 2, 3, or 4.")
+
+if __name__ == "__main__":
+    main()
