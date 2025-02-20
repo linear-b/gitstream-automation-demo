@@ -30,9 +30,16 @@ class Client(threading.Thread):
         while self.signal:
             try:
                 data = b''
+                total_size = 0
+                max_size = 1024 * 1024  # 1MB limit
                 while True:
                     chunk = self.socket.recv(4096)
                     data += chunk
+                    total_size += len(chunk)
+                    if total_size > max_size:
+                        print(f"Client {self.id} sent too large message, disconnecting")
+                        self.signal = False
+                        break
                     if len(chunk) < 4096:
                         break
             except (socket.error, ConnectionResetError):
@@ -90,13 +97,18 @@ def main():
     try:
         stop_event.wait()
     except KeyboardInterrupt:
+        print("\nShutting down server...")
         for client in connections[:]:
             client.signal = False
             client.socket.close()
+            try:
+                client.join(timeout=1.0)
+            except threading.ThreadError:
+                pass
         stop_event.set()
         newConnectionsThread.join()
-        sock.close()    
-    
+        sock.close()
+        print("Server shutdown complete")
 
 if __name__ == "__main__":
     main()
