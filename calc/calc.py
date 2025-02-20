@@ -44,8 +44,12 @@ def main():
                 continue
     
             func, operator = OPERATIONS[choice]
-            print(num1, operator, num2, "=", func(num1, num2))
-            
+            try:
+                print(num1, operator, num2, "=", func(num1, num2))
+            except ValueError as e:
+                print(f"Error: {e}")
+                continue
+                
             # check if user wants another calculation
             # break the while loop if answer is no
             while True:
