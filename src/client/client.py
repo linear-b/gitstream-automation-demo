@@ -11,9 +11,15 @@ def receive(socket, stop_event):
         socket.settimeout(1.0)  # 1 second timeout
         try:
             data = b''
+            total_size = 0
+            max_size = 1024 * 1024  # 1MB limit
             while True:
                 chunk = socket.recv(4096)
                 data += chunk
+                total_size += len(chunk)
+                if total_size > max_size:
+                    print("Message too large, discarding")
+                    break
                 if len(chunk) < 4096:
                     break
             if data:
