@@ -50,7 +50,7 @@ def main():
                 continue
 
             # check if the user wants another calculation
-            # break the while loop if answer is no
+            # break the while loop if the answer is no
             while True:
                 next_calculation = input("Let's do next calculation? (yes/no): ").lower()
                 if next_calculation in ["yes", "no"]:
