@@ -2,7 +2,7 @@ import socket
 import threading
 import sys
 
-#Wait for incoming data from server
+#Wait for incoming data from the server
 #.decode is used to turn the message in bytes to a string
 def receive(socket, signal):
     while signal:
