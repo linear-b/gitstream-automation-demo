@@ -53,7 +53,10 @@ while True:
         # check if the user wants another calculation
         # break the while loop if answer is no
         next_calculation = input("Let's do next calculation? (yes/no): ").lower()
-        if next_calculation == "no":
-          break
+        if next_calculation in ["no", "n"]:
+            break
+        elif next_calculation not in ["yes", "y"]:
+            print("Invalid input. Please enter 'yes' or 'no'.")
+            continue
     else:
         print("Invalid Input")
