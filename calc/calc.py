@@ -12,8 +12,17 @@ def multiply(x, y):
 
 # This function divides two numbers
 def divide(x, y):
+    if y == 0:
+        raise ValueError("Cannot divide by zero")
     return x / y
 
+# Map operations to functions
+operations = {
+    '1': (add, '+'),
+    '2': (subtract, '-'),
+    '3': (multiply, '*'),
+    '4': (divide, '/')
+}
 
 print("Select operation.")
 print("1.Add")
@@ -34,21 +43,16 @@ while True:
             print("Invalid input. Please enter a number.")
             continue
 
-        if choice == '1':
-            print(num1, "+", num2, "=", add(num1, num2))
-
-        elif choice == '2':
-            print(num1, "-", num2, "=", subtract(num1, num2))
-
-        elif choice == '3':
-            print(num1, "*", num2, "=", multiply(num1, num2))
-
-        elif choice == '4':
-            print(num1, "/", num2, "=", divide(num1, num2))
+        operation_func, symbol = operations[choice]
+        try:
+            print(num1, symbol, num2, "=", operation_func(num1, num2))
+        except ValueError as e:
+            print(str(e))
+            continue
         
         # check if the user wants another calculation
         # break the while loop if answer is no
-        next_calculation = input("Let's do next calculation? (yes/no): ")
+        next_calculation = input("Let's do next calculation? (yes/no): ").lower()
         if next_calculation == "no":
           break
     else:
