@@ -18,7 +18,7 @@ def receive(socket, signal):
 host = input(Host: )
 port = int(input(Port: ))
 
-#Attempt connection to server
+#Attempt connection to the server
 try:
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect((host, port))
