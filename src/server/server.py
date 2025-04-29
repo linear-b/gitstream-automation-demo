@@ -1,0 +1,114 @@
+import socket
+import threading
+
+#Variables for holding information about connections
+connections = []
+total_connections = 0
+_connections_lock = threading.Lock()
+
+#Client class, new instance created for each connected client
+#Each instance has the socket and address that is associated with items
+#Along with an assigned ID and a name chosen by the client
+class Client(threading.Thread):
+    def __init__(self, socket, address, id, name, signal):
+        threading.Thread.__init__(self)
+        self.socket = socket
+        self.address = address
+        self.id = id
+        self.name = name
+        self.signal = signal
+    
+    def __str__(self):
+        return str(self.id) + " " + str(self.address)
+    
+    #Attempt to get data from client
+    #If unable to, assume client has disconnected and remove him from server data
+    #If able to and we get data back, print it in the server and send it back to every
+    #client aside from the client that has sent it
+    #.decode is used to convert the byte data into a printable string
+    def run(self):
+        while self.signal:
+            try:
+                data = b''
+                total_size = 0
+                max_size = 1024 * 1024  # 1MB limit
+                while True:
+                    chunk = self.socket.recv(4096)
+                    data += chunk
+                    total_size += len(chunk)
+                    if total_size > max_size:
+                        print(f"Client {self.id} sent too large message, disconnecting")
+                        self.signal = False
+                        break
+                    if len(chunk) < 4096:
+                        break
+            except (socket.error, ConnectionResetError):
+                print("Client " + str(self.address) + " has disconnected")
+                self.signal = False
+                with _connections_lock:
+                    connections.remove(self)
+                break
+            if data != b"":
+                print("ID " + str(self.id) + ": " + str(data.decode('utf-8')))
+                with _connections_lock:
+                    for client in connections:
+                        if client.id != self.id:
+                            client.socket.sendall(data)
+
+#Wait for new connections
+def newConnections(socket, stop_event):
+    while not stop_event.is_set():
+        sock, address = socket.accept()
+        with _connections_lock:
+            global total_connections
+            connections.append(Client(sock, address, total_connections, "Name", True))
+            connections[len(connections) - 1].start()
+            print("New connection at ID " + str(connections[len(connections) - 1]))
+            total_connections += 1
+
+def main():
+    #Get host and port
+    host = input("Host: ")
+    if not host:
+        host = "localhost"
+    
+    try:
+        port = int(input("Port: "))
+    except ValueError:
+        print("Port must be a number")
+        return
+    if not (1024 <= port <= 65535):
+        raise ValueError("Port must be between 1024 and 65535")
+
+    #Create new server socket
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        sock.bind((host, port))
+        sock.listen(5)
+    except socket.error as e:
+        print(f"Failed to bind socket: {e.strerror}")
+        return
+
+    stop_event = threading.Event()
+    #Create new thread to wait for connections
+    newConnectionsThread = threading.Thread(target = newConnections, args = (sock, stop_event))
+    newConnectionsThread.start()
+
+    try:
+        stop_event.wait()
+    except KeyboardInterrupt:
+        print("\nShutting down server...")
+        for client in connections[:]:
+            client.signal = False
+            client.socket.close()
+            try:
+                client.join(timeout=1.0)
+            except threading.ThreadError:
+                pass
+        stop_event.set()
+        newConnectionsThread.join()
+        sock.close()
+        print("Server shutdown complete")
+
+if __name__ == "__main__":
+    main()
